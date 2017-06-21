@@ -50,7 +50,7 @@ def add_status():
 
     if spy.current_status_message != None:
 
-        print 'Your current status message is %s \n' % (spy.current_status_message)
+        print colored('Your current status message is %s \n','red') % colored((spy.current_status_message),'blue')
     else:
         print 'You don\'t have any status message currently \n'
 
@@ -72,7 +72,7 @@ def add_status():
         item_position = 1
 
         for message in STATUS_MESSAGES:
-            print '%d. %s' % (item_position, message)
+            print colored('%d. %s' % (item_position, message),'blue')
             item_position = item_position + 1
 
         message_selection = int(raw_input("\nChoose from the above messages "))
@@ -85,7 +85,7 @@ def add_status():
         print 'The option you chose is not valid! Press either y or n.'
 
     if updated_status_message:
-        print 'Your updated status message is: %s' % (updated_status_message)
+        print colored('Your updated status message is: %s','red') % colored((updated_status_message),'blue')
     else:
         print 'You current don\'t have a status update'
 
@@ -138,7 +138,6 @@ def add_friend():
 
 def remove_friend():
     print_friends()
-    if len(friends) 
     friend_choice = raw_input("Choose from your friends")
 
     friend_choice_position = int(friend_choice) - 1
@@ -248,7 +247,7 @@ def start_chat(spy):
                             "Close Application \n"
                             ]
             for i in range(0,len(menu_choices)):
-                print i+1,menu_choices[i]
+                print colored((i+1),'red'),colored(menu_choices[i],'red')
 
             menu_choice = int(raw_input("Enter choice:"))
             if menu_choice == 1:
