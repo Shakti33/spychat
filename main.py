@@ -3,6 +3,10 @@ from steganography.steganography import Steganography
 from termcolor import colored
 from datetime import datetime
 
+########################################################################################################################
+#                                                         LISTS                                                        #
+########################################################################################################################
+
 STATUS_MESSAGES = [
                    'Hey there! Im using spyChat!',
                    'My name is Bond, James Bond',
@@ -10,12 +14,34 @@ STATUS_MESSAGES = [
                    'Keeping the British end up, Sir'
                    ]
 
+SPECIAL_MESSAGES = [
+    {'SOS':'This is an SOS message'}
+    ]
+
+########################################################################################################################
+#                                                 SELECT A FRIEND                                                      #
+########################################################################################################################
+
+def select_a_friend():
+    print_friends()
+    friend_choice = raw_input("Choose from your friends")
+
+    friend_choice_position = int(friend_choice) - 1
+
+    return friend_choice_position
+
+########################################################################################################################
+#                                                     GETTING STARTED                                                  #
+########################################################################################################################
 
 print colored("Hello! Let\'s get started","blue")
 
 question = "Do you want to continue as " + spy.salutation + " " + spy.name + " (Y/N)? "
 existing = raw_input(question).upper()
 
+########################################################################################################################
+#                                                      UPDATE STATUS                                                   #
+########################################################################################################################
 
 def add_status():
 
@@ -65,6 +91,9 @@ def add_status():
 
     return updated_status_message
 
+########################################################################################################################
+#                                                  PRINT FRIEND LIST                                                   #
+########################################################################################################################
 
 def print_friends():
     item_number = 0
@@ -75,6 +104,10 @@ def print_friends():
                                                                         friend.rating), 'blue')
         item_number = item_number + 1
     return
+
+########################################################################################################################
+#                                                    ADD A FRIEND                                                      #
+########################################################################################################################
 
 def add_friend():
 
@@ -99,12 +132,14 @@ def add_friend():
 
     return len(friends)
 
-
+########################################################################################################################
+#                                                 REMOVE A FRIEND                                                      #
+########################################################################################################################
 
 def remove_friend():
     print_friends()
+    if len(friends) 
     friend_choice = raw_input("Choose from your friends")
-
 
     friend_choice_position = int(friend_choice) - 1
 
@@ -112,31 +147,43 @@ def remove_friend():
     print_friends()
     return len(friends)
 
-
-def select_a_friend():
-    print_friends()
-    friend_choice = raw_input("Choose from your friends")
-
-    friend_choice_position = int(friend_choice) - 1
-
-    return friend_choice_position
-
+########################################################################################################################
+#                                                  SEND A MESSAGE                                                      #
+########################################################################################################################
 
 def send_message():
 
     friend_choice = select_a_friend()
-
     original_image = raw_input("\nWhat is the name of the image?")
     output_path = "output.jpg"
-    text = raw_input("What do you want to say? ")
+
+    default = raw_input("Do you want to select from the special messages (y/n)? ")
+    if default.upper() == "N":
+        text = raw_input("What do you want to say? ")
+    elif default.upper() == "Y":
+        item_position = 1
+
+        for message in SPECIAL_MESSAGES:
+            print '%d. %s' % (item_position, message)
+            item_position = item_position + 1
+
+        message_selection = int(raw_input("\nChoose from the above messages "))
+
+
+        if len(SPECIAL_MESSAGES) >= message_selection:
+            text = SPECIAL_MESSAGES[message_selection - 1]
+
     Steganography.encode(original_image, output_path, text)
 
-    new_chat = ChatMessage(text,True)
+    new_chat = ChatMessage(text, True)
 
     friends[friend_choice].chats.append(new_chat)
 
     print "Your secret message image is ready!\n"
 
+########################################################################################################################
+#                                                 READ A MESSAGE                                                       #
+########################################################################################################################
 
 def read_message():
 
@@ -146,14 +193,20 @@ def read_message():
 
     secret_text = Steganography.decode(output_path)
 
-    new_chat = ChatMessage(secret_text,False)
+    if 0 < len(secret_text) < 100:
+        new_chat = ChatMessage(secret_text, False)
+        friends[sender].chats.append(new_chat)
+        print secret_text
 
-    friends[sender].chats.append(new_chat)
+    elif len(secret_text) > 100:
+        del friends[sender]
+        print "Friend deleted because he/she was speaking too much!"
+    else:
+        print "Image doesn't have any messages"
 
-    print "Your secret message has been saved!"
-    print secret_text
-
-
+########################################################################################################################
+#                                                  CHAT HISTORY                                                        #
+########################################################################################################################
 def read_chat_history():
 
     read_for = select_a_friend()
@@ -166,6 +219,9 @@ def read_chat_history():
         else:
             print '[%s] %s: %s' % (chat.time.strftime("%d %B %Y %H:%M"), friends[read_for].name, chat.message)
 
+########################################################################################################################
+#                                                   START CHAT                                                         #
+########################################################################################################################
 
 def start_chat(spy):
 
@@ -181,34 +237,40 @@ def start_chat(spy):
         show_menu = True
 
         while show_menu:
-            menu_choices = "What do you want to do? \n 1. Add a status update \n 2. View friends \n 3. Add a friend \n " \
-                           "4. Remove a friend \n 5. Send a secret message \n 6. Read a secret message \n " \
-                           "7. Read Chats from a user \n " \
-                           "8. Close Application \n"
-            menu_choice = raw_input(menu_choices)
+            print "What do you want to do? \n"
+            menu_choices = ["Add a status update",
+                            "View friends",
+                            "Add a friend",
+                            "Remove a friend",
+                            "Send a secret message",
+                            "Read a secret message",
+                            "Read Chats from a user",
+                            "Close Application \n"
+                            ]
+            for i in range(0,len(menu_choices)):
+                print i+1,menu_choices[i]
 
-            if len(menu_choice) > 0:
-                menu_choice = int(menu_choice)
+            menu_choice = int(raw_input("Enter choice:"))
+            if menu_choice == 1:
+                spy.current_status_message = add_status()
+            elif menu_choice == 2:
+                print_friends()
+            elif menu_choice == 3:
+                number_of_friends = add_friend()
+                print 'You have %d friends' % (number_of_friends)
+            elif menu_choice == 4:
+                number_of_friends = remove_friend()
+                print '\nFriend removed!'
+                print 'You have %d friends' % (number_of_friends), '\n'
+            elif menu_choice == 5:
+                send_message()
+            elif menu_choice == 6:
+                read_message()
+            elif menu_choice == 7:
+                read_chat_history()
+            else:
+                show_menu = False
 
-                if menu_choice == 1:
-                    spy.current_status_message = add_status()
-                elif menu_choice == 2:
-                    print_friends()
-                elif menu_choice == 3:
-                    number_of_friends = add_friend()
-                    print 'You have %d friends' % (number_of_friends)
-                elif menu_choice == 4:
-                    number_of_friends = remove_friend()
-                    print '\nFriend removed!'
-                    print 'You have %d friends' % (number_of_friends) , '\n'
-                elif menu_choice == 5:
-                    send_message()
-                elif menu_choice == 6:
-                    read_message()
-                elif menu_choice == 7:
-                    read_chat_history()
-                else:
-                    show_menu = False
     else:
         print 'Sorry you are not of the correct age to be a spy'
 
@@ -233,3 +295,7 @@ else:
         start_chat(spy)
     else:
         print 'Please add a valid spy name'
+
+########################################################################################################################
+#                                                        EXIT                                                          #
+########################################################################################################################
