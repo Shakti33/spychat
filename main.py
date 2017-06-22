@@ -23,10 +23,13 @@ SPECIAL_MESSAGES = [
 ########################################################################################################################
 
 def select_a_friend():
-    print_friends()
-    friend_choice = raw_input("Choose from your friends")
-
-    friend_choice_position = int(friend_choice) - 1
+    if len(friends) != 0:
+        print_friends()
+        friend_choice = raw_input("Choose from your friends")
+        friend_choice_position = int(friend_choice) - 1
+    else:
+        print "No friend found! Add a friend first"
+        return -1
 
     return friend_choice_position
 
@@ -96,13 +99,17 @@ def add_status():
 ########################################################################################################################
 
 def print_friends():
-    item_number = 0
-    print '\nYour friends are:\n'
-    for friend in friends:
-        print colored('%d. %s %s aged %d with rating %.2f is online' % (item_number + 1, friend.salutation, friend.name,
-                                                                        friend.age,
-                                                                        friend.rating), 'blue')
-        item_number = item_number + 1
+    if len(friends) != 0:
+        item_number = 0
+        print '\nYour friends are:\n'
+        for friend in friends:
+            print colored(
+                '%d. %s %s aged %d with rating %.2f is online' % (item_number + 1, friend.salutation, friend.name,
+                                                                  friend.age,
+                                                                  friend.rating), 'blue')
+            item_number = item_number + 1
+    else:
+        return
     return
 
 ########################################################################################################################
@@ -137,10 +144,10 @@ def add_friend():
 ########################################################################################################################
 
 def remove_friend():
-    print_friends()
-    friend_choice = raw_input("Choose from your friends")
-
-    friend_choice_position = int(friend_choice) - 1
+    friend_choice = select_a_friend()
+    if friend_choice == -1:
+        return 0
+    friend_choice_position = int(friend_choice)
 
     del friends[friend_choice_position]
     print_friends()
@@ -259,8 +266,7 @@ def start_chat(spy):
                 print 'You have %d friends' % (number_of_friends)
             elif menu_choice == 4:
                 number_of_friends = remove_friend()
-                print '\nFriend removed!'
-                print 'You have %d friends' % (number_of_friends), '\n'
+
             elif menu_choice == 5:
                 send_message()
             elif menu_choice == 6:
