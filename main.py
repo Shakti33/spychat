@@ -247,7 +247,7 @@ def start_chat(spy):
                             "Close Application \n"
                             ]
             for i in range(0,len(menu_choices)):
-                print colored((i+1),'red'),colored(menu_choices[i],'red')
+                print colored((i+1),'red'),colored(menu_choices[i],'grey')
 
             menu_choice = int(raw_input("Enter choice:"))
             if menu_choice == 1:
