@@ -15,7 +15,7 @@ STATUS_MESSAGES = [
                    ]
 
 SPECIAL_MESSAGES = [
-    {'SOS':'This is an SOS message'}
+                    'SOS'
     ]
 
 ########################################################################################################################
@@ -194,7 +194,7 @@ def read_message():
 
     if 0 < len(secret_text) < 100:
         new_chat = ChatMessage(secret_text, False)
-        friends[sender].chats.append(new_chat)
+
         print secret_text
 
     elif len(secret_text) > 100:
