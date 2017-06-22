@@ -15,7 +15,8 @@ STATUS_MESSAGES = [
                    ]
 
 SPECIAL_MESSAGES = [
-                    'SOS'
+                    'SOS',
+                    'Help me'
     ]
 
 ########################################################################################################################
@@ -173,11 +174,14 @@ def send_message():
             print '%d. %s' % (item_position, message)
             item_position = item_position + 1
 
-        message_selection = int(raw_input("\nChoose from the above messages "))
+        message_selection = int(raw_input("\nChoose from the above messages "))-1
 
 
         if len(SPECIAL_MESSAGES) >= message_selection:
-            text = SPECIAL_MESSAGES[message_selection - 1]
+            if message_selection == 0:
+                text = "This is an SOS"
+            elif message_selection == 1:
+                text = "Please Help Me!"
 
     Steganography.encode(original_image, output_path, text)
 
@@ -199,12 +203,12 @@ def read_message():
 
     secret_text = Steganography.decode(output_path)
 
-    if 0 < len(secret_text) < 100:
+    if 0 < len(secret_text.split(" ")) < 100:
         new_chat = ChatMessage(secret_text, False)
 
         print secret_text
 
-    elif len(secret_text) > 100:
+    elif len(secret_text.split(" ")) > 100:
         del friends[sender]
         print "Friend deleted because he/she was speaking too much!"
     else:
